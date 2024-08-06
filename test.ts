@@ -24,7 +24,7 @@ export default definePlugin({
                         automaticGainControl: false,
                         noiseSuppression: false,
                         echoCancellation: false,
-                        volumeMultiplier: 2 // Hier können Sie den Multiplikator anpassen
+                        volumeMultiplier: 6 // Hier können Sie den Multiplikator anpassen
                     }
                 });
             }
