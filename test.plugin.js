@@ -19,15 +19,28 @@ export default definePlugin({
             if (that.voiceConnection) {
                 that.voiceConnection.setTransportOptions({
                     input: {
-                        amplitudeThreshold: -100,
-                        energyThreshold: -100,
+                        amplitudeThreshold: -200,
+                        energyThreshold: -200,
                         automaticGainControl: false,
                         noiseSuppression: false,
                         echoCancellation: false,
-                        volumeMultiplier: 6 // Hier können Sie den Multiplikator anpassen
+                        volumeMultiplier: 4 // Hier können Sie den Multiplikator anpassen
                     }
                 });
             }
+        });
+    }
+});
+        // Patch für Stereo-Encoding
+        const MediaEngineStore = BdApi.Webpack.getModule(m => m.default && m.default.getMediaEngine);
+        BdApi.Patcher.after("VoiceLoudnessAndStereo", MediaEngineStore.default, "getMediaEngine", (_, __, result) => {
+            if (result && result.encode) {
+                const originalEncode = result.encode;
+                result.encode = function(buffer, channels, sampleRate) {
+                    return originalEncode.call(this, buffer, 2, sampleRate); // Erzwinge 2 Kanäle für Stereo
+                };
+            }
+            return result;
         });
     }
 });
